@@ -110,6 +110,35 @@ class TetrisClient:
     def send(self):
         self.sock.sendall(self.msg())
 
+class SplashClient:
+    def __init__(self, ip):
+        self.keys = {"a": False, "d": False, "w": False}
+        self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.sock.connect((ip, 42069))
+        self.send()
+        while True:
+            with keyboard.Listener(on_release=self.on, on_press=self.off) as l:
+                l.join()
+
+    def on(self, key):
+        if hasattr(key, "char") and key.char in self.keys:
+            self.keys[key.char] = False
+            self.send()
+
+    def off(self, key):
+        if hasattr(key, "char") and key.char in self.keys:
+            self.keys[key.char] = True
+            self.send()
+
+    def msg(self):
+        return "".join([
+            f"{int(value)}" for key, value in self.keys.items()
+        ]).encode()
+
+    def send(self):
+        print(self.msg())
+        self.sock.sendall(self.msg())
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("ip", nargs="?", help="ip of the pong server")
@@ -121,7 +150,8 @@ def main():
     games = [
         "Snake", 
         "Pong",
-        "Tetris"
+        "Tetris",
+        "Splash"
     ]
     gameindex = None
     for index, game in enumerate(games):
@@ -146,6 +176,8 @@ def main():
             PongClient(host)
         if gameindex == 2:
             TetrisClient(host)
+        if gameindex == 3:
+            SplashClient(host)
     except KeyboardInterrupt:
         exit(0)
 
