@@ -136,7 +136,6 @@ class SplashClient:
         ]).encode()
 
     def send(self):
-        print(self.msg())
         self.sock.sendall(self.msg())
 
 def main():
