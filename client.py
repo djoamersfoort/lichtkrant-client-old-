@@ -4,13 +4,13 @@ import os
 from pynput import keyboard
 from colorama import init, Fore, Back, Style
 
+
 def on_press(key):
-    try:    
+    try:
         k = key.char
     except AttributeError:
         k = ""
-        pass
-    print('Key pressed: ' + k)
+    print(f"Key pressed: {k}")
 
 
 class SnakeClient:
@@ -27,6 +27,7 @@ class SnakeClient:
         self.s.sendall(str(key)[1].encode())
         os.system("clear")
         print(Fore.GREEN + "Playing Snake")
+
 
 class PongClient:
     def __init__(self, ip):
@@ -62,6 +63,7 @@ class PongClient:
 
     def send(self):
         self.sock.sendall(self.current())
+
 
 class TetrisClient:
     def __init__(self, ip):
@@ -110,6 +112,7 @@ class TetrisClient:
     def send(self):
         self.sock.sendall(self.msg())
 
+
 class SplashClient:
     def __init__(self, ip):
         self.keys = {"a": False, "d": False, "w": False}
@@ -138,6 +141,7 @@ class SplashClient:
     def send(self):
         self.sock.sendall(self.msg())
 
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("ip", nargs="?", help="ip of the pong server")
@@ -146,16 +150,11 @@ def main():
     if "ip" in args and args.ip:
         host = args.ip
 
-    games = [
-        "Snake", 
-        "Pong",
-        "Tetris",
-        "Splash"
-    ]
+    games = ["Snake", "Pong", "Tetris", "Splash"]
     gameindex = None
     for index, game in enumerate(games):
         print(Fore.BLUE + "[" + str(index + 1) + "] " + Fore.WHITE + game)
-    while gameindex == None:
+    while gameindex is None:
         print(Fore.WHITE + "")
         game = input("Enter game id: ")
         try:
@@ -179,6 +178,7 @@ def main():
             SplashClient(host)
     except KeyboardInterrupt:
         exit(0)
+
 
 if __name__ == "__main__":
     main()
