@@ -1,16 +1,6 @@
 import argparse
 import socket
-import os
 from pynput import keyboard
-from colorama import init, Fore, Back, Style
-
-
-def on_press(key):
-    try:
-        k = key.char
-    except AttributeError:
-        k = ""
-    print(f"Key pressed: {k}")
 
 
 class SnakeClient:
@@ -25,8 +15,6 @@ class SnakeClient:
 
     def on_release(self, key):
         self.s.sendall(str(key)[1].encode())
-        os.system("clear")
-        print(Fore.GREEN + "Playing Snake")
 
 
 class PongClient:
@@ -42,15 +30,11 @@ class PongClient:
         if hasattr(key, "char") and key.char in self.keys:
             self.keys[key.char] = False
             self.send()
-        os.system("clear")
-        print(Fore.GREEN + "Playing Pong")
 
     def off(self, key):
         if hasattr(key, "char") and key.char in self.keys:
             self.keys[key.char] = True
             self.send()
-        os.system("clear")
-        print(Fore.GREEN + "Playing Pong")
 
     def current(self):
         if self.keys["w"] and self.keys["s"]:
@@ -90,8 +74,6 @@ class TetrisClient:
         elif key == keyboard.Key.space:
             self.keys[" "] = False
             self.send()
-        os.system("clear")
-        print(Fore.GREEN + "Playing Tetris")
 
     def off(self, key):
         if hasattr(key, "char"):
@@ -101,8 +83,6 @@ class TetrisClient:
         elif key == keyboard.Key.space:
             self.keys[" "] = True
             self.send()
-        os.system("clear")
-        print(Fore.GREEN + "Playing Tetris")
 
     def msg(self):
         return "".join([
@@ -153,20 +133,20 @@ def main():
     games = ["Snake", "Pong", "Tetris", "Splash"]
     gameindex = None
     for index, game in enumerate(games):
-        print(Fore.BLUE + "[" + str(index + 1) + "] " + Fore.WHITE + game)
+        print(f"[{index + 1}] {game}")
     while gameindex is None:
-        print(Fore.WHITE + "")
+        print("")
         game = input("Enter game id: ")
         try:
             index = int(game) - 1
             if index < len(games):
                 gameindex = index
             else:
-                print(Fore.RED + "That option is not in the list!")
+                print("That option is not in the list!")
         except ValueError:
-            print(Fore.RED + "That option is not in the list!")
+            print("That option is not in the list!")
 
-    print(Fore.YELLOW + f"Connecting to {host}")
+    print(f"Connecting to {host}")
     try:
         if gameindex == 0:
             SnakeClient(host)
